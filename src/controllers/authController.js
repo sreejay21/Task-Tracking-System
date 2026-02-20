@@ -13,14 +13,12 @@ const register = async (req, res) => {
         }
         const hashedPassword = await common.hashPassword(password);
         const newUser = await userRepository.createUser({ name, email, password: hashedPassword });
-        const token = common.generateToken(newUser);
         
         const responseData = {
             message: constantMessage.responseMessages.userCreated,
                 name: newUser.name,
                 email: newUser.email,
                 password: newUser.password,
-            token
         };
 
         responseHelper.successCreate(responseData, res);
@@ -29,10 +27,35 @@ const register = async (req, res) => {
     }
 };
 
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await userRepository.findUserByEmail(email);
+        if (!user) {
+            return responseHelper.unAuthorized(res);
+        }
+        const isPasswordValid = await common.comparePassword(password, user.password);
+        if (!isPasswordValid) {
+            return responseHelper.unAuthorized(res);
+        }
+            const token = common.generateToken(user);
+            const responseData = {
+                message: constantMessage.responseMessages.loginSuccessful,
+                token
+            };
+
+            responseHelper.Ok(responseData, res);
+    } catch (error) {
+        responseHelper.internalServerError(res, error.message);
+    }
+
+}
 
 
 module.exports = {
-    register
+    register,
+    login
+    
 };
 
 

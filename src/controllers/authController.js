@@ -16,10 +16,10 @@ const register = async (req, res) => {
         
         const responseData = {
             message: constantMessage.responseMessages.userCreated,
-                firstName: newUser.firstName,
-                lastName: newUser.lastName,
-                email: newUser.email,
-                password: newUser.password,
+                firstName: newUser?.firstName,
+                lastName: newUser?.lastName,
+                email: newUser?.email,
+                password: newUser?.password,
         };
 
         responseHelper.successCreate(responseData, res);
@@ -53,9 +53,29 @@ const login = async (req, res) => {
 }
 
 
+const getProfile = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await userRepository.findUserById(userId);
+        if (!user) {
+            return responseHelper.notFound(res);
+        }
+        const responseData = {
+            firstName: user?.firstName,
+            lastName: user?.lastName,
+            email: user?.email,
+            profileImage: user?.profileImage
+        };
+        responseHelper.Ok(responseData, res);
+    } catch (error) {
+        responseHelper.internalServerError(res, error.message);
+    }
+};
+
 module.exports = {
     register,
-    login
+    login,
+    getProfile
     
 };
 

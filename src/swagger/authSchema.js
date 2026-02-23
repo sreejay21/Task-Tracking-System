@@ -1,6 +1,6 @@
-const resgisterSchema = {
+const registerSchema = {
     type: 'object',
-    title: 'resgisterSchema',
+    title: 'registerSchema',
     properties: {
     status: {
       type: 'boolean',
@@ -52,4 +52,40 @@ const loginSchema = {
   },
 };
 
-module.exports = { resgisterSchema, loginSchema };
+const profileSchema = {
+    type: 'object',
+    title: 'profileSchema',
+    properties: {
+    status: {
+        type: 'boolean',
+        description: 'Response status'
+    },
+    responsecode: {
+        type: 'integer',
+        description: 'Response code',
+        default: 200
+    },
+    result: {
+        type: 'object',
+        properties: {
+        firstName: {
+            type: 'string',
+            description: 'First name of the user'
+        },
+        lastName: {
+            type: 'string',
+            description: 'Last name of the user'
+        },
+        email: {
+            type: 'string',
+            description: 'Email of the user'
+        },
+        profileImage:{
+            type:'string'
+        }
+        }
+    }
+    },
+};
+
+module.exports = { registerSchema, loginSchema, profileSchema };

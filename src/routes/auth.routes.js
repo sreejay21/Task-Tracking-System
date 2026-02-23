@@ -18,7 +18,9 @@ const authMiddleware = require("../middleware/authMiddleware");
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               firstName:
+ *                 type: string
+ *               lastName:
  *                 type: string
  *               email:
  *                 type: string
@@ -30,7 +32,7 @@ const authMiddleware = require("../middleware/authMiddleware");
  *         content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/resgisterSchema'
+ *              $ref: '#/components/schemas/registerSchema'
  *       400:
  *         description: Bad Request.
  *         content:
@@ -84,5 +86,45 @@ router.post('/register', authController.register);
  *               $ref: '#/components/schemas/internalServerErrorResponse'
  */
 router.post('/login', authController.login);
+
+
+/**
+ * @swagger
+ * /auth/profile:
+ *   get:
+ *     summary: Get user profile
+ *     description: >
+ *       Retrieve the logged-in user's profile information.
+ *       Pass the JWT token in the Authorization header 
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/profileSchema'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/unauthorizedResponse'
+ *       404:
+ *         description: Not Found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/notFoundResponse'
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/internalServerErrorResponse'
+ */
+router.get('/profile', authMiddleware, authController.getProfile);
 
 module.exports = router;

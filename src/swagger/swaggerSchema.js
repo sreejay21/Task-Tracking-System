@@ -1,5 +1,5 @@
 const {badRequestResponse, unauthorizedResponse, notFoundResponse, internalServerErrorResponse} = require('./commonSchema');
-const {resgisterSchema,loginSchema} = require('./authSchema');
+const {loginSchema,profileSchema, registerSchema} = require('./authSchema');
 
 
 
@@ -8,8 +8,9 @@ const schemas   = {
     unauthorizedResponse,
     notFoundResponse,
     internalServerErrorResponse,
-    resgisterSchema,
-    loginSchema
+    registerSchema,
+    loginSchema,
+    profileSchema
 
 }
 

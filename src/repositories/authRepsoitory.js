@@ -19,7 +19,7 @@ const userRepository = {
         catch (error) {
             throw error;
         }
-        }
+    }
 }
 
 module.exports = userRepository;

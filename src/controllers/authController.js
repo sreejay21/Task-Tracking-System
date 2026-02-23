@@ -6,17 +6,18 @@ const constantMessage = require('../utilities/constantMessage');
 
 const register = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { firstName, lastName, email, password } = req.body;
         const existingUser = await userRepository.findUserByEmail(email);
         if (existingUser) {
             return responseHelper.getErrorResult(constantMessage.responseMessages.userExists, res);
         }
         const hashedPassword = await common.hashPassword(password);
-        const newUser = await userRepository.createUser({ name, email, password: hashedPassword });
+        const newUser = await userRepository.createUser({ firstName, lastName, email, password: hashedPassword });
         
         const responseData = {
             message: constantMessage.responseMessages.userCreated,
-                name: newUser.name,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
                 email: newUser.email,
                 password: newUser.password,
         };

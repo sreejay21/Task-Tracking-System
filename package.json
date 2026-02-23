@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "TaskMaster: A Collaborative Task Tracking System",
   "main": "index.js",
- "scripts": {
-  "start": "node src/app.js",
-  "dev": "nodemon src/app.js"
-},
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -20,6 +20,6 @@
     "mongoose": "^9.2.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.13"
+    "nodemon": "^3.1.14"
   }
 }

@@ -28,7 +28,13 @@ const userRepository = {
             throw error;
         }
     },
-    
+    async updateUserById(id, updateData) {
+        return await User.findByIdAndUpdate(
+            id,
+            updateData,
+            { new: true, runValidators: true }
+        );
+    }
 }
 
 module.exports = userRepository;

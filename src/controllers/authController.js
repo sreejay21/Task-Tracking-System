@@ -72,10 +72,60 @@ const getProfile = async (req, res) => {
     }
 };
 
+const updateProfile = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { firstName, lastName, email, profileImage } = req.body;
+
+        const user = await userRepository.findUserById(userId);
+        if (!user) {
+            return responseHelper.notFound(res);
+        }
+
+        if (email && email !== user.email) {
+            const existingUser = await userRepository.findUserByEmail(email);
+            if (existingUser) {
+                return responseHelper.getErrorResult(
+                   constantMessage.errorMessage.emailExists,
+                    res
+                );
+            }
+        }
+
+        const updatedData = {
+            ...(firstName && { firstName }),
+            ...(lastName && { lastName }),
+            ...(email && { email }),
+            ...(profileImage && { profileImage })
+        };
+
+        const updatedUser = await userRepository.updateUserById(
+            userId,
+            updatedData
+        );
+
+        const responseData = {
+            message: constantMessage.responseMessages.profileUpdatedSuccessfully,
+            data: {
+                firstName: updatedUser.firstName,
+                lastName: updatedUser.lastName,
+                email: updatedUser.email,
+                profileImage: updatedUser.profileImage
+            }
+        };
+
+        return responseHelper.Ok(responseData, res);
+
+    } catch (error) {
+        return responseHelper.internalServerError(res, error.message);
+    }
+};
+
 module.exports = {
     register,
     login,
-    getProfile
+    getProfile,
+    updateProfile
     
 };
 

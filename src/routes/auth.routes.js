@@ -127,4 +127,58 @@ router.post('/login', authController.login);
  */
 router.get('/profile', authMiddleware, authController.getProfile);
 
+/**
+ * @swagger
+ * /auth/updateProfile:
+ *   put:
+ *     summary: Update user profile
+ *     description: >
+ *       Update the logged-in user's personal information.
+ *       Pass the JWT token in the Authorization header.
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               profileImage:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/profileSchema'
+*       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/unauthorizedResponse'
+ *       404:
+ *         description: Not Found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/notFoundResponse'
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/internalServerErrorResponse'
+ */
+router.put('/updateProfile', authMiddleware, authController.updateProfile);
+
 module.exports = router;

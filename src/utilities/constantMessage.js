@@ -4,5 +4,9 @@ module.exports={
         userExists: 'User with this email already exists',
         internalServerError: 'Internal server error',
         loginSuccessful: 'Login successful',
+        profileUpdatedSuccessfully:"Profile updated successfully"
+    },
+    errorMessage:{
+        emailExists:"Email already in use"
     }
 }

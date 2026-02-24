@@ -6,7 +6,8 @@ module.exports={
         loginSuccessful: 'Login successful',
         profileUpdatedSuccessfully:"Profile updated successfully",
         taskCreated:"Task Created Successfully",
-        taskAssigned:"Task assigned successfully"
+        taskAssigned:"Task assigned successfully",
+        taskCompleted:"Task marked as completed successfully"
     },
     errorMessage:{
         emailExists:"Email already in use",
@@ -14,7 +15,9 @@ module.exports={
         invalidRole:"Invalid role",
         adminAccessErrror:"Only admins Only have access to this.",
         UserNotFound:"User not found",
-        closedTask:"The task is closed hence cannot be assigned!"
+        closedTask:"The task is closed hence cannot be assigned!",
+        notAssignedToTask:"You are not assigned to this task",
+        taskAlreadyCompleted:"Task already marked completed"
     },
     constantValue:{
         admin:"Admin",
@@ -22,7 +25,9 @@ module.exports={
     },
     Enums:{
         admin:"Admin",
-        user:"User"
+        user:"User",
+        open:"open",
+        completed:"completed"
     }
 
 }

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const constants = require("../utilities/constantMessage")
 
 const taskSchema = new mongoose.Schema(
   {
@@ -19,8 +20,8 @@ const taskSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ['open', 'completed'],
-      default: 'open'
+      enum: [constants?.Enums?.open,constants?.Enums?.completed],
+      default: constants?.Enums?.open
     },
 
     createdBy: {

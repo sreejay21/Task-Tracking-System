@@ -160,7 +160,7 @@ const markTaskCompleted = async (req, res) => {
 
         if (!isAssigned) {
             return responseHelper.getErrorResult(
-                "You are not assigned to this task",
+                constantMessage?.errorMessage?.notAssignedToTask,
                 res
             );
         }
@@ -171,7 +171,7 @@ const markTaskCompleted = async (req, res) => {
 
         if (alreadyCompleted) {
             return responseHelper.getErrorResult(
-                "Task already marked completed",
+                constantMessage?.errorMessage?.taskAlreadyCompleted,
                 res
             );
         }
@@ -186,7 +186,7 @@ const markTaskCompleted = async (req, res) => {
         );
 
         return responseHelper.Ok(
-            { message: "Task marked as completed successfully" },
+            { message: constantMessage?.responseMessages?.taskAssigned },
             res
         );
 

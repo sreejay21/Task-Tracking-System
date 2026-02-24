@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const constant = require("../utilities/constantMessage")
 
 const userSchema = new mongoose.Schema(
   {
@@ -22,6 +23,11 @@ const userSchema = new mongoose.Schema(
     profileImage:{
       type: String,
       default:""
+    },
+    role: {
+      type: String,
+      enum: [constant?.Enums?.user, constant?.Enums?.admin],   
+      default: constant?.Enums?.user,           
     },
     isDeleted: {
       type: Boolean,

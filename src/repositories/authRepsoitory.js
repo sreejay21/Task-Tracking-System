@@ -34,7 +34,27 @@ const userRepository = {
             updateData,
             { new: true, runValidators: true }
         );
+    },
+    async getAllUsers() {
+        try{
+            return await User.find({});
+        } 
+        catch (error) {
+            throw error;
+        }
+    },
+    async updateUserRole (userid,role){
+      try {
+        return await User.findByIdAndUpdate(
+          userid,
+          { role: role },
+          { new: true },
+        );
+      } catch (error) {
+        throw error;
+      }
     }
+
 }
 
 module.exports = userRepository;

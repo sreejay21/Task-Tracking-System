@@ -121,11 +121,59 @@ const updateProfile = async (req, res) => {
     }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await userRepository.getAllUsers();
+    const responseData = users.map(user => ({
+      id: common.encrypt(user._id),
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role || "User", 
+      profileImage: user.profileImage || null
+    }));
+
+    responseHelper.Ok({ users: responseData }, res);
+
+  } catch (error) {
+    responseHelper.internalServerError(res, error.message);
+  }
+};
+
+const assignRole = async (req, res) => {
+    try {
+        const { userid, role } = req.body;
+        const currentUserId = req.user.id; 
+         const decryptedUserId = common.decrypt(userid);
+
+        if (currentUserId === decryptedUserId) {
+            return responseHelper.getErrorResult(constantMessage.errorMessage.roleAssignError, res);
+        }
+
+        if (![constantMessage.constantValue.admin,constantMessage.constantValue.user].includes(role)) {
+            return responseHelper.getErrorResult(constantMessage.errorMessage.invalidRole, res);
+        }
+
+        const user = await userRepository.findUserById(decryptedUserId);
+        if (!user) {
+            return responseHelper.notFound(res);
+        }
+
+        const updatedUser = await userRepository.updateUserRole(decryptedUserId, role);
+
+        responseHelper.Ok({ message: `Role updated to ${role}`, user: { id:  common.encrypt(updatedUser._id), role: updatedUser.role } }, res);
+    } catch (error) {
+        responseHelper.internalServerError(res, error.message);
+    }
+};
+
 module.exports = {
     register,
     login,
     getProfile,
-    updateProfile
+    updateProfile,
+    getAllUsers,
+    assignRole
     
 };
 

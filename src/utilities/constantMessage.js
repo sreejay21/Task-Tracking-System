@@ -7,6 +7,18 @@ module.exports={
         profileUpdatedSuccessfully:"Profile updated successfully"
     },
     errorMessage:{
-        emailExists:"Email already in use"
+        emailExists:"Email already in use",
+        roleAssignError:"You cannot assign a role to yourself",
+        invalidRole:"Invalid role",
+        adminAccessErrror:"Only admins can assign roles"
+    },
+    constantValue:{
+        admin:"Admin",
+        user:"User"
+    },
+    Enums:{
+        admin:"Admin",
+        user:"User"
     }
+
 }

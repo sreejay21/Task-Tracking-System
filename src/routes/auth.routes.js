@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-const authMiddleware = require("../middleware/authMiddleware");
+const {authMiddleware,adminOnlyMiddleware} = require("../middleware/authMiddleware");
+const {loginValidation,registerValidation,assignRoleValidation} = require("../validators/userValidator")
 
 
 // Register route
@@ -46,7 +47,7 @@ const authMiddleware = require("../middleware/authMiddleware");
  *             schema:
  *               $ref: '#/components/schemas/internalServerErrorResponse'
  */
-router.post('/register', authController.register);
+router.post('/register',registerValidation, authController.register);
 
 /**
  * @swagger
@@ -85,7 +86,7 @@ router.post('/register', authController.register);
  *             schema:
  *               $ref: '#/components/schemas/internalServerErrorResponse'
  */
-router.post('/login', authController.login);
+router.post('/login',loginValidation, authController.login);
 
 
 /**
@@ -180,5 +181,9 @@ router.get('/profile', authMiddleware, authController.getProfile);
  *               $ref: '#/components/schemas/internalServerErrorResponse'
  */
 router.put('/updateProfile', authMiddleware, authController.updateProfile);
+
+router.get('/listUsers', authController.getAllUsers);
+
+router.post('/assignRole',assignRoleValidation,authMiddleware,adminOnlyMiddleware, authController.assignRole)
 
 module.exports = router;

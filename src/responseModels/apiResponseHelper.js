@@ -35,6 +35,9 @@ module.exports = {
   },
   getValidationError: function (res, error) {
     res.status(400).send({ status: false, responsecode: 400, error })
-  }
+  },
+  forbiddenErrorMessage: function (errResp,res) {
+    res.status(403).send({ status: false, responsecode: 403, message:errResp  })
+  },
   // Error reponses
 }

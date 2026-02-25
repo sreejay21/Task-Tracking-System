@@ -182,8 +182,96 @@ router.get('/profile', authMiddleware, authController.getProfile);
  */
 router.put('/updateProfile', authMiddleware, authController.updateProfile);
 
+
+/**
+ * @swagger
+ * /auth/listUsers:
+ *   get:
+ *     summary: Get all users
+ *     description: Retrieve a list of all registered users. Pass the JWT token in the Authorization header.
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of users retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/userSchema'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/unauthorizedResponse'
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/internalServerErrorResponse'
+ */
 router.get('/listUsers', authController.getAllUsers);
 
+/**
+ * @swagger
+ * /auth/assignRole:
+ *   post:
+ *     summary: Assign a role to a user
+ *     description: >
+ *       Assign a specific role to a user. Only admins can perform this action.
+ *       Pass the JWT token in the Authorization header.
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: The ID of the user to assign a role
+ *               role:
+ *                 type: string
+ *                 description: The role to assign (e.g., admin, user)
+ *     responses:
+ *       200:
+ *         description: Role assigned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/roleAssignmentSchema'
+ *       400:
+ *         description: Bad Request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/badRequestResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/unauthorizedResponse'
+ *       403:
+ *         description: Forbidden – Only admins can assign roles
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/forbiddenResponse'
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/internalServerErrorResponse'
+ */
 router.post('/assignRole',assignRoleValidation,authMiddleware,adminOnlyMiddleware, authController.assignRole)
 
 module.exports = router;

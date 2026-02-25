@@ -28,6 +28,10 @@ const options = {
       {
         bearerAuth: []
       }
+    ],
+    tags: [
+      { name: 'Auth', description: 'Authentication and user management' },
+      { name: 'Task', description: 'Task creation, assignment and tracking' }
     ]
   },
   apis: ['./src/routes/*.js'],

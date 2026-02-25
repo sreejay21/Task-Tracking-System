@@ -88,4 +88,100 @@ const profileSchema = {
     },
 };
 
-module.exports = { registerSchema, loginSchema, profileSchema };
+const userSchema = {
+  type: 'object',
+  title: 'userSchema',
+  properties: {
+    status: {
+      type: 'boolean',
+      description: 'Response status',
+      default: true
+    },
+    responsecode: {
+      type: 'integer',
+      description: 'Response code',
+      default: 200
+    },
+    result: {
+      type: 'object',
+      properties: {
+        _id: {
+          type: 'string',
+          description: 'Unique user ID'
+        },
+        firstName: {
+          type: 'string',
+          description: "User's first name"
+        },
+        lastName: {
+          type: 'string',
+          description: "User's last name"
+        },
+        email: {
+          type: 'string',
+          description: "User's email address"
+        },
+        role: {
+          type: 'string',
+          description: 'Role of the user (e.g., admin, user)'
+        },
+        profileImage: {
+          type: 'string',
+          description: "URL of user's profile image"
+        },
+        createdAt: {
+          type: 'string',
+          format: 'date-time',
+          description: 'Timestamp when the user was created'
+        },
+        updatedAt: {
+          type: 'string',
+          format: 'date-time',
+          description: 'Timestamp when the user was last updated'
+        }
+      }
+    }
+  }
+};
+
+const roleAssignmentSchema = {
+  type: 'object',
+  title: 'roleAssignmentSchema',
+  properties: {
+    status: {
+      type: 'boolean',
+      description: 'Response status',
+      default: true
+    },
+    responsecode: {
+      type: 'integer',
+      description: 'Response code',
+      default: 200
+    },
+    result: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          description: 'Success message indicating the role was assigned'
+        },
+        user: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              description: 'Encrypted user ID'
+            },
+            role: {
+              type: 'string',
+              description: 'Updated role of the user'
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+module.exports = { registerSchema, loginSchema, profileSchema, userSchema, roleAssignmentSchema };
+

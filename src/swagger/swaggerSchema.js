@@ -1,6 +1,7 @@
 const {badRequestResponse, unauthorizedResponse, notFoundResponse, internalServerErrorResponse,forbiddenResponse} = require('./commonSchema');
 const {loginSchema,profileSchema, registerSchema,roleAssignmentSchema,userSchema} = require('./authSchema');
 const { taskSchema, createTaskResponse, listTasksResponse, assignTaskResponse, } = require('./taskSchema');
+const { teamSchema, createTeamResponse, listTeamsResponse } = require('./teamSchema');
 
 const schemas   = {
     badRequestResponse,
@@ -18,6 +19,9 @@ const schemas   = {
     createTaskResponse,
     listTasksResponse,
     assignTaskResponse,
+    createTeamResponse,
+    listTeamsResponse,
+    teamSchema
 }
 
 module.exports = schemas;

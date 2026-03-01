@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 
 const createTask = async (req, res) => {
     try {
-        const { title, description, dueDate } = req.body;
+        const { title, description, dueDate, teamId } = req.body;
 
         const taskData = {
             title,
@@ -15,6 +15,11 @@ const createTask = async (req, res) => {
             dueDate,
             createdBy: req.user.id
         };
+
+        if (teamId) {
+            // decrypt and attach team
+            taskData.team = common.decrypt(teamId);
+        }
 
         const newTask = await taskRepository.createTask(taskData);
 
@@ -72,6 +77,20 @@ const assignTask = async (req, res) => {
             return responseHelper.notFound(res);
         }
 
+        // if task is tied to a team, verify that all assignees belong to that team
+        if (task.team) {
+            const team = await require('../repositories/teamRepository').findTeamById(task.team);
+            const notMembers = decryptedAssignUserId.filter(u =>
+                !team.members.some(m => m._id.toString() === u)
+            );
+            if (notMembers.length > 0) {
+                return responseHelper.getErrorResult(
+                    'One or more users are not members of the team associated with this task',
+                    res
+                );
+            }
+        }
+
         const userExists = await userRepository.findUserById(decryptedAssignUserId);
         if (!userExists) {
             return responseHelper.getErrorResult(constantMessage?.errorMessage?.UserNotFound, res);
@@ -105,7 +124,7 @@ const assignTask = async (req, res) => {
     } catch (error) {
         return responseHelper.internalServerError(res, error.message);
     }
-}
+};
 
 
 const getMyAssignedTasks = async (req, res) => {
@@ -228,6 +247,93 @@ const getTaskStatus = async (req, res) => {
     }
 };
 
+const addComment = async (req, res) => {
+    try {
+        const { taskId } = req.params;
+        const { text } = req.body;
+        const decryptedTaskId = common.decrypt(taskId);
+        const task = await taskRepository.findTaskById(decryptedTaskId);
+        if (!task) {
+            return responseHelper.notFound(res);
+        }
+        // only participants can comment (creator, assigned users or team members)
+        const isParticipant =
+            task.createdBy.toString() === req.user.id ||
+            task.assignedTo.some(u => u.toString() === req.user.id) ||
+            (task.team && (await require('../repositories/teamRepository').findTeamById(task.team))?.members.some(m => m._id.toString() === req.user.id));
+        if (!isParticipant && req.user.role !== constantMessage.constantValue.admin) {
+            return responseHelper.forbidden(res);
+        }
+        const commentObj = {
+            text,
+            commentedBy: req.user.id
+        };
+        const updated = await taskRepository.addComment(decryptedTaskId, commentObj);
+        return responseHelper.Ok({ message: constantMessage.responseMessages.commentAdded, task: updated }, res);
+    } catch (error) {
+        return responseHelper.internalServerError(res, error.message);
+    }
+};
+
+const addAttachment = async (req, res) => {
+    try {
+        const { taskId } = req.params;
+        const { filename, url } = req.body;
+        const decryptedTaskId = common.decrypt(taskId);
+        const task = await taskRepository.findTaskById(decryptedTaskId);
+        if (!task) {
+            return responseHelper.notFound(res);
+        }
+        // similar participant check
+        const isParticipant =
+            task.createdBy.toString() === req.user.id ||
+            task.assignedTo.some(u => u.toString() === req.user.id) ||
+            (task.team && (await require('../repositories/teamRepository').findTeamById(task.team))?.members.some(m => m._id.toString() === req.user.id));
+        if (!isParticipant && req.user.role !== constantMessage.constantValue.admin) {
+            return responseHelper.forbidden(res);
+        }
+        const attachmentObj = {
+            filename,
+            url,
+            uploadedBy: req.user.id
+        };
+        const updated = await taskRepository.addAttachment(decryptedTaskId, attachmentObj);
+        return responseHelper.Ok({ message: constantMessage.responseMessages.attachmentAdded, task: updated }, res);
+    } catch (error) {
+        return responseHelper.internalServerError(res, error.message);
+    }
+};
+
+const getTasksByTeam = async (req, res) => {
+    try {
+        const { teamId } = req.params;
+        const decryptedTeamId = common.decrypt(teamId);
+        // ensure user belongs to team or is admin
+        const team = await require('../repositories/teamRepository').findTeamById(decryptedTeamId);
+        if (!team) {
+            return responseHelper.notFound(res);
+        }
+        if (
+            req.user.role !== constantMessage.constantValue.admin &&
+            !team.members.some(m => m._id.toString() === req.user.id)
+        ) {
+            return responseHelper.forbidden(res);
+        }
+        const tasks = await taskRepository.getTasksByTeam(decryptedTeamId);
+        const response = tasks.map(task => ({
+            taskId: common.encrypt(task._id),
+            title: task.title,
+            description: task.description,
+            status: task.status,
+            dueDate: task.dueDate,
+            assignedTo: task.assignedTo?.map(u => `${u.firstName} ${u.lastName}`)
+        }));
+        return responseHelper.Ok({ tasks: response }, res);
+    } catch (error) {
+        return responseHelper.internalServerError(res, error.message);
+    }
+};
+
 const searchTasks = async (req, res) => {
     try {
         const { query } = req.query;  
@@ -257,6 +363,17 @@ const searchTasks = async (req, res) => {
     }
 };
 
+// optional AI-powered description generator (stub)
+const generateDescription = async (req, res) => {
+    try {
+        const { text } = req.body;
+        // placeholder logic - in real system call external AI model
+        const generated = `Auto-generated description based on input: ${text}`;
+        return responseHelper.Ok({ description: generated }, res);
+    } catch (error) {
+        return responseHelper.internalServerError(res, error.message);
+    }
+};
 module.exports = {
     createTask,
     listAllTask,
@@ -264,5 +381,10 @@ module.exports = {
     getMyAssignedTasks,
     markTaskCompleted,
     getTaskStatus,
-    searchTasks
+    getTasksByTeam,
+    searchTasks,
+    addComment,
+    addAttachment,
+    generateDescription
 };
+

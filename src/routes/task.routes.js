@@ -3,6 +3,9 @@ const router = express.Router();
 const {authMiddleware,adminOnlyMiddleware} = require("../middleware/authMiddleware");
 const taskController = require("../controllers/taskController")
 const {createTaskValidation, assignTaskValidation}= require("../validators/taskValidator")
+const { commentValidation, attachmentValidation } = require('../validators/commentValidator');
+const { createTeamValidation, addMemberValidation, joinTeamValidation } = require('../validators/teamValidator');
+const { aiValidation } = require('../validators/commentValidator');
 
 
 
@@ -30,6 +33,9 @@ const {createTaskValidation, assignTaskValidation}= require("../validators/taskV
  *               dueDate:
  *                 type: string
  *                 format: date-time
+ *               teamId:
+ *                 type: string
+ *                 description: Encrypted team id (optional)
  *     responses:
  *       200:
  *         description: Task created successfully
@@ -62,7 +68,8 @@ const {createTaskValidation, assignTaskValidation}= require("../validators/taskV
  *             schema:
  *               $ref: '#/components/schemas/internalServerErrorResponse'
  */
-router.post("/createTask",createTaskValidation,authMiddleware,adminOnlyMiddleware, taskController.createTask)
+// allow any authenticated user to create tasks; admins still required to assign
+router.post("/createTask",createTaskValidation,authMiddleware, taskController.createTask)
 
 /**
  * @swagger
@@ -319,6 +326,132 @@ router.get("/taskStatus", authMiddleware, taskController.getTaskStatus);
  *             schema:
  *               $ref: '#/components/schemas/internalServerErrorResponse'
  */
-router.get("/search", authMiddleware, taskController.searchTasks);
+
+// comments & attachments
+/**
+ * @swagger
+ * /task/{taskId}/comment:
+ *   post:
+ *     summary: Add a comment to a task
+ *     tags: [Task]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: taskId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Encrypted task id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Comment added successfully
+ *       400:
+ *         $ref: '#/components/schemas/badRequestResponse'
+ *       401:
+ *         $ref: '#/components/schemas/unauthorizedResponse'
+ *       404:
+ *         $ref: '#/components/schemas/notFoundResponse'
+ *       500:
+ *         $ref: '#/components/schemas/internalServerErrorResponse'
+ */
+router.post('/:taskId/comment', commentValidation, authMiddleware, taskController.addComment);
+
+/**
+ * @swagger
+ * /task/{taskId}/attachment:
+ *   post:
+ *     summary: Add an attachment to a task
+ *     tags: [Task]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: taskId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Encrypted task id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               filename:
+ *                 type: string
+ *               url:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Attachment added successfully
+ *       400:
+ *         $ref: '#/components/schemas/badRequestResponse'
+ *       401:
+ *         $ref: '#/components/schemas/unauthorizedResponse'
+ *       404:
+ *         $ref: '#/components/schemas/notFoundResponse'
+ *       500:
+ *         $ref: '#/components/schemas/internalServerErrorResponse'
+ */
+router.post('/:taskId/attachment', attachmentValidation, authMiddleware, taskController.addAttachment);
+
+/**
+ * @swagger
+ * /task/generate-description:
+ *   post:
+ *     summary: Generate a task description using AI (stub)
+ *     tags: [Task]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Generated description
+ */
+router.post('/generate-description', aiValidation, authMiddleware, taskController.generateDescription);
+
+/**
+ * @swagger
+ * /task/team/{teamId}:
+ *   get:
+ *     summary: Get all tasks associated with a team
+ *     tags: [Task]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: teamId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Encrypted team id
+ *     responses:
+ *       200:
+ *         description: List of tasks for the team
+ *       401:
+ *         $ref: '#/components/schemas/unauthorizedResponse'
+ *       500:
+ *         $ref: '#/components/schemas/internalServerErrorResponse'
+ */
+router.get('/team/:teamId', authMiddleware, taskController.getTasksByTeam);
 
 module.exports= router

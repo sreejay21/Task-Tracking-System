@@ -39,7 +39,7 @@ const {loginValidation,registerValidation,assignRoleValidation} = require("../va
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/badRequestResponse'
+*               $ref: '#/components/schemas/badRequestResponse'
  *       500:
  *         description: Server error.
  *         content:
@@ -273,5 +273,21 @@ router.get('/listUsers', authController.getAllUsers);
  *               $ref: '#/components/schemas/internalServerErrorResponse'
  */
 router.post('/assignRole',assignRoleValidation,authMiddleware,adminOnlyMiddleware, authController.assignRole)
+
+/**
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Logout the current user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *       401:
+ *         $ref: '#/components/schemas/unauthorizedResponse'
+ */
+router.post('/logout', authMiddleware, authController.logout);
 
 module.exports = router;

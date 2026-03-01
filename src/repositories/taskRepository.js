@@ -29,6 +29,7 @@ const taskRepository = {
     },
     async assignTask(taskId, assignedUsers) {
         try {
+            // update only if task is still open
             return await Task.findOneAndUpdate(
                 {
                     _id: taskId,
@@ -40,6 +41,35 @@ const taskRepository = {
                 .populate('createdBy', 'firstName lastName')
                 .populate('assignedTo', 'firstName lastName');
 
+        } catch (error) {
+            throw error;
+        }
+    },
+    async addComment(taskId, commentObj) {
+        try {
+            return await Task.findByIdAndUpdate(
+                taskId,
+                { $push: { comments: commentObj } },
+                { new: true }
+            ).populate('comments.commentedBy', 'firstName lastName');
+        } catch (error) {
+            throw error;
+        }
+    },
+    async addAttachment(taskId, attachmentObj) {
+        try {
+            return await Task.findByIdAndUpdate(
+                taskId,
+                { $push: { attachments: attachmentObj } },
+                { new: true }
+            ).populate('attachments.uploadedBy', 'firstName lastName');
+        } catch (error) {
+            throw error;
+        }
+    },
+    async getTasksByTeam(teamId) {
+        try {
+            return await Task.find({ team: teamId }).sort({ createdAt: -1 });
         } catch (error) {
             throw error;
         }

@@ -16,6 +16,7 @@ const createTaskResponse = {
             description: { type: 'string', description: "Detailed description of the task" },
             dueDate: { type: 'string', format: 'date-time', description: 'Deadline for the task' },
             status: { type: 'string', description: 'Current status of the task (open/completed)' },
+            team: { type: 'string', description: 'Encrypted team id if task belongs to a team', nullable: true },
             createdBy: {
               type: 'object',
               properties: {
@@ -68,6 +69,7 @@ const listTasksResponse = {
               description: { type: 'string', description: "Detailed description of the task" },
               dueDate: { type: 'string', format: 'date-time', description: 'Deadline for the task' },
               status: { type: 'string', description: 'Current status of the task (open/completed)' },
+              team: { type: 'string', description: 'Encrypted team id if task belongs to a team', nullable: true },
               createdBy: {
                 type: 'object',
                 properties: {
@@ -119,6 +121,7 @@ const assignTaskResponse = {
             description: { type: 'string', description: "Detailed description of the task" },
             dueDate: { type: 'string', format: 'date-time', description: 'Deadline for the task' },
             status: { type: 'string', description: 'Current status of the task (open/completed)' },
+            team: { type: 'string', description: 'Encrypted team id if task belongs to a team', nullable: true },
             createdBy: {
               type: 'object',
               properties: {

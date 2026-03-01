@@ -167,6 +167,11 @@ const assignRole = async (req, res) => {
     }
 };
 
+const logout = async (req, res) => {
+    // token invalidation could be added here; for now we simply let client drop token
+    return responseHelper.Ok({ message: constantMessage.responseMessages.logoutSuccess }, res);
+};
+
 module.exports = {
     register,
     login,
@@ -174,7 +179,8 @@ module.exports = {
     updateProfile,
     getAllUsers,
     assignRole
-    
+    ,
+    logout
 };
 
 

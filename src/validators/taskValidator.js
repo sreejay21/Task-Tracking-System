@@ -28,6 +28,10 @@ const createTaskValidation = [
             }
             return true;
         }),
+    body('teamId')
+        .optional()
+        .isString()
+        .withMessage('teamId must be an encrypted string'),
     validate
 ];
 

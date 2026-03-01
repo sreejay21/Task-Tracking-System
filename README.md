@@ -13,4 +13,4 @@ This backend supports:
 * Secure logout endpoint
 * Swagger API documentation available at `/api-docs`
 
-Optional future extensions may include real-time notifications and AI-generated task summaries.
+Optional future extensions may include real-time notifications and AI-generated task summaries..

@@ -27,12 +27,23 @@ const { createTeamValidation, addMemberValidation, joinTeamValidation } = requir
  *       200:
  *         description: Team created successfully
  *       400:
- *         $ref: '#/components/schemas/badRequestResponse'
+ *         description: Bad Request.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/badRequestResponse'
  *       401:
- *         $ref: '#/components/schemas/unauthorizedResponse'
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/unauthorizedResponse'
  *       500:
- *         $ref: '#/components/schemas/internalServerErrorResponse'
- */
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/internalServerErrorResponse'
 router.post('/create', createTeamValidation, authMiddleware, teamController.createTeam);
 
 /**
@@ -62,14 +73,24 @@ router.post('/create', createTeamValidation, authMiddleware, teamController.crea
  *     responses:
  *       200:
  *         description: Member added successfully
+*       400:
+ *         description: Bad Request.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/badRequestResponse'
  *       401:
- *         $ref: '#/components/schemas/unauthorizedResponse'
- *       403:
- *         $ref: '#/components/schemas/forbiddenResponse'
- *       404:
- *         $ref: '#/components/schemas/notFoundResponse'
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/unauthorizedResponse'
  *       500:
- *         $ref: '#/components/schemas/internalServerErrorResponse'
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/internalServerErrorResponse'
  */
 router.post('/:teamId/addMember', addMemberValidation, authMiddleware, teamController.addMember);
 
@@ -90,12 +111,24 @@ router.post('/:teamId/addMember', addMemberValidation, authMiddleware, teamContr
  *     responses:
  *       200:
  *         description: Joined team successfully
+*       400:
+ *         description: Bad Request.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/badRequestResponse'
  *       401:
- *         $ref: '#/components/schemas/unauthorizedResponse'
- *       404:
- *         $ref: '#/components/schemas/notFoundResponse'
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/unauthorizedResponse'
  *       500:
- *         $ref: '#/components/schemas/internalServerErrorResponse'
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/internalServerErrorResponse'
  */
 router.post('/:teamId/join', joinTeamValidation, authMiddleware, teamController.joinTeam);
 
@@ -110,10 +143,24 @@ router.post('/:teamId/join', joinTeamValidation, authMiddleware, teamController.
  *     responses:
  *       200:
  *         description: Teams retrieved successfully
+*       400:
+ *         description: Bad Request.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/badRequestResponse'
  *       401:
- *         $ref: '#/components/schemas/unauthorizedResponse'
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/unauthorizedResponse'
  *       500:
- *         $ref: '#/components/schemas/internalServerErrorResponse'
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/internalServerErrorResponse'
  */
 router.get('/list', authMiddleware, teamController.listTeams);
 
